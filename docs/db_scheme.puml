@@ -1,0 +1,26 @@
+@startuml
+
+header Демо проект
+title Схема связи (Используется список словарей)
+
+hide circle
+
+entity users {
+  * **id**  :  int
+  __
+  **login**  :  str
+  **password**  :  str
+}
+
+entity chats {
+  * **id**  :  int
+  __
+  **admin**  :  int
+  **members**  :  list[int]
+  **former_members**  :  list[int]
+  **black_list**  :  list[int]
+  **messages**  :  list[int]
+}
+
+users }o---o{ chats
+@enduml
