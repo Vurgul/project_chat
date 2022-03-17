@@ -32,6 +32,6 @@ app = chat_api.create_app(
 
 if __name__ == '__main__':
     from wsgiref import simple_server
-
-    with simple_server.make_server('', 8000, app=app) as server:
+    with simple_server.make_server('localhost', 8000, app=app) as server:
+        print(f'Server running on http://localhost:{server.server_port} ...')
         server.serve_forever()

@@ -16,6 +16,15 @@ from simple_chat.application.dataclasses import User, Chat  # нужно реа�
 @component
 class ChatsRepo(BaseRepository, interfaces.ChatsRepo):
 
+    def add(self, chat: Chat):
+        pass
+
+    def get_or_create(self, id_: Optional[int]) -> Chat:
+        pass
+
+    def remove(self, chat: Chat):
+        pass
+
     def update(self, chat, data):
         # Работы с логикой БД
         pass
