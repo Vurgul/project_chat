@@ -1,26 +1,46 @@
 @startuml
 
 header Демо проект
-title Схема связи (Используется список словарей)
+title Схема связи
 
 hide circle
 
 entity users {
   * **id**  :  int
   __
-  **login**  :  str
-  **password**  :  str
+  **login**  :  varchar
+  **password**  :  varchar
 }
 
 entity chats {
   * **id**  :  int
   __
-  **admin**  :  int
-  **members**  :  list[int]
-  **former_members**  :  list[int]
-  **black_list**  :  list[int]
-  **messages**  :  list[int]
+  * **admin**  :  int
+  **title** : varchar
+
 }
 
-users }o---o{ chats
+entity chats_message {
+  * **id**  :  int
+  __
+  * **chat**  :  int
+  * **user**  :  int
+  **text** : str
+}
+
+entity chats_member {
+  * **id**  :  int
+  --
+  * **chat**  :  int
+  * **user**  :  int
+  **former_members**  :  bool
+  **black_list**  :  bool
+}
+
+
+users --o{ chats
+users --o{ chats_member
+users --o{ chats_message
+chats --o{ chats_member
+chats --o{ chats_message
 @enduml

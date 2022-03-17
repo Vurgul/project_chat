@@ -11,7 +11,9 @@ from simple_chat.application import services
 from . import auth, controllers
 
 
-def create_app() -> App:
+def create_app(
+
+) -> App:
     ...
     # return app
     pass

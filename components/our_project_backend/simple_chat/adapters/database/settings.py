@@ -1,3 +1,7 @@
 from pydantic import BaseSettings
 
-# Опционально?
+
+class Settings(BaseSettings):
+    # DB_NAME
+    # DB_HOST
+    pass

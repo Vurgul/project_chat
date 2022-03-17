@@ -22,36 +22,38 @@ rectangle "Чат" {
   usecase "Выйти из чата" as go_out
   usecase "Войти в чат" as come_in
   usecase "Посмотреть участников чата" as get_users
-  usecase "Отправка сообщений в чат" as send_message
-  usecase "Получение списка сообщений чата" as get_messages
 
 }
 
+rectangle "Сообщение" {
+  usecase "Отправка сообщений в чат" as send_message
+  usecase "Получение списка сообщений чата" as get_messages
+}
 
-actor "Пользователь" as user
+actor "Анонимный ользователь" as user
 user -- registration
 user -- authentication
 
-actor "Авторизированный пользователь" as auth_user
+actor "Пользователь" as auth_user
 auth_user -- create
 
 actor "Создатель чата" as creator_chat_user
 creator_chat_user -- information_update
 creator_chat_user -- add_user
 creator_chat_user -- kick_user
-creator_chat_user -- send_message
+
 creator_chat_user -- update_info
 creator_chat_user -- delete
-creator_chat_user -- get_info
-creator_chat_user -- get_messages
+
+
 
 actor "Пользователь чата" as chat_user
 chat_user -- get_users
 chat_user -- go_out
 chat_user -- come_in
-chat_user -- send_message
+chat_user -l-- send_message
 chat_user -- get_info
-chat_user -- get_messages
+chat_user -l-- get_messages
 
 
 @enduml

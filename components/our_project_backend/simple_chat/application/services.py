@@ -8,6 +8,17 @@ from classic.components import component
 from classic.messaging import Message, Publisher
 
 from . import errors, interfaces
-from .dataclasses import User
+from .dataclasses import User, Chat, ChatMessage, ChatMember
 
 # Тут наши сервисы
+join_points = PointCut()
+join_point = join_points.join_point
+
+
+class UserInfo(DTO):
+    id: int
+    login: str
+    password: str
+
+
+
