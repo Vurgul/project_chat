@@ -17,17 +17,24 @@ class DB:
 
     context = TransactionContext(bind=engine)
 
+    users_repo = database.repositories.UsersRepo(context=context)
     chats_repo = database.repositories.ChatsRepo(context=context)
+    chat_messages_repo = database.repositories.ChatMessagesRepo(context=context)
+    chat_members_repo = database.repositories.ChatMembersRepo(context=context)
 
 
 class Application:
     chat_user_service = services.ChatUserService(
         chat_repo=DB.chats_repo,
     )
+    user_service = services.UserService(
+        user_repo=DB.users_repo,
+    )
 
 
 app = chat_api.create_app(
     chat=Application.chat_user_service,
+    user=Application.user_service,
 )
 
 if __name__ == '__main__':

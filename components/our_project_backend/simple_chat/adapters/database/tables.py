@@ -24,23 +24,23 @@ metadata = MetaData(naming_convention=naming_convention)
 users = Table(
     'users',
     metadata,
-    Column('id', Integer, primary_key=True),
-    Column('login', String, nullable=False),
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('login', String, nullable=False, unique=True),
     Column('password', String, nullable=False),
 )
 
 chats = Table(
     'chats',
     metadata,
-    Column('id', Integer, primary_key=True),
+    Column('id', Integer, primary_key=True, autoincrement=True),
     Column('user_id', ForeignKey('users.id'), nullable=False),
-    Column('title', String, nullable=False),
+    Column('title', String, nullable=False, unique=True),
 )
 
 chats_message = Table(
     'chats_message',
     metadata,
-    Column('id', Integer, primary_key=True),
+    Column('id', Integer, primary_key=True, autoincrement=True),
     Column('chat_id', ForeignKey('chats.id'), nullable=False),
     Column('user_id', ForeignKey('users.id'), nullable=False),
     Column('text', String, nullable=False)
@@ -49,7 +49,7 @@ chats_message = Table(
 chats_member = Table(
     'chats_member',
     metadata,
-    Column('id', Integer, primary_key=True),
+    Column('id', Integer, primary_key=True, autoincrement=True),
     Column('chat_id', ForeignKey('chats.id'), nullable=False),
     Column('user_id', ForeignKey('users.id'), nullable=False),
     Column('former_members', Boolean, default=False),

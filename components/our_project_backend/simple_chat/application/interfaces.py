@@ -13,11 +13,12 @@ class UsersRepo(ABC):
         ...
 
     @abstractmethod
-    def add(self, user: User):
+    def get_by_login(self, login_: int) -> Optional[User]:
         ...
 
+
     @abstractmethod
-    def get_or_create(self, id_: Optional[int]) -> User:
+    def add(self, user: User):
         ...
 
 
@@ -25,6 +26,10 @@ class ChatsRepo(ABC):
 
     @abstractmethod
     def get_by_id(self, id_: int) -> Optional[Chat]:
+        ...
+
+    @abstractmethod
+    def get_by_title(self, title_: int) -> Optional[Chat]:
         ...
 
     @abstractmethod
@@ -44,7 +49,7 @@ class ChatsRepo(ABC):
         ...
 
 
-class ChatMessages(ABC):
+class ChatMessagesRepo(ABC):
 
     @abstractmethod
     def get_by_id(self, id_: int) -> Optional[ChatMessage]:
@@ -59,7 +64,7 @@ class ChatMessages(ABC):
         ...
 
 
-class ChatMembers(ABC):
+class ChatMembersRepo(ABC):
 
     @abstractmethod
     def get_by_id(self, id_: int) -> Optional[ChatMember]:
@@ -70,6 +75,7 @@ class ChatMembers(ABC):
         ...
 
     @abstractmethod
-    def edit(self):  # Вопросики
+    def get_or_create(self, id_: Optional[int]) -> ChatMessage:
         ...
+
 

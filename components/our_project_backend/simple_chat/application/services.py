@@ -16,9 +16,10 @@ join_point = join_points.join_point
 
 
 class UserInfo(DTO):
-    id: int
+    id: Optional[int]
     login: str
     password: str
+
 
 @component
 class ChatUserService:
@@ -30,3 +31,33 @@ class ChatUserService:
         if chat is None:
             raise Exception
         return chat
+
+
+@component
+class UserService:
+    user_repo: interfaces.UsersRepo
+
+    @join_point
+    @validate_with_dto
+    def add_user(self, user_info: UserInfo):
+        user = user_info.create_obj(User)
+        self.user_repo.add(user)
+
+    @join_point
+    def get_user_info(self, user_id) -> User:
+        user = self.user_repo.get_by_id(user_id)
+        if user in None:
+            raise Exception
+        return user
+
+
+@component
+class ChatMemberService:
+    chat_member: interfaces.ChatMembersRepo
+    pass
+
+
+@component
+class ChatMessageService:
+    chat_message: interfaces.ChatMessagesRepo
+    pass
