@@ -29,7 +29,8 @@ class UsersRepo(BaseRepository, interfaces.UsersRepo):
 class ChatsRepo(BaseRepository, interfaces.ChatsRepo):
 
     def add(self, chat: Chat):
-        pass
+        self.session.add(chat)
+        self.session.flush()
 
     def get_or_create(self, id_: Optional[int]) -> Chat:
         pass

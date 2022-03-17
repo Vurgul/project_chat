@@ -21,20 +21,13 @@ class UserInfo(DTO):
     password: str
 
 
-@component
-class ChatUserService:
-    chat_repo: interfaces.ChatsRepo
-
-    @join_point
-    def get_chat_info(self, chat_id) -> Chat:
-        chat = self.chat_repo.get_by_id(chat_id)
-        if chat is None:
-            raise Exception
-        return chat
-
+class ChatInfo(DTO):
+    title: str
+    id: Optional[int] = None
+    user_id: Optional[int] = None
 
 @component
-class UserService:
+class Authorization:
     user_repo: interfaces.UsersRepo
 
     @join_point
@@ -52,12 +45,38 @@ class UserService:
 
 
 @component
-class ChatMemberService:
-    chat_member: interfaces.ChatMembersRepo
-    pass
+class Chat:
+    user_repo: interfaces.UsersRepo
+    chat_repo: interfaces.ChatsRepo
+    chat_member_repo: interfaces.ChatMembersRepo
+    chat_message_repo: interfaces.ChatMessagesRepo
+
+    @join_point
+    def get_chat_info(self, chat_id) -> Chat:
+        chat = self.chat_repo.get_by_id(chat_id)
+        if chat is None:
+            raise Exception
+        return chat
+
+    @join_point
+    def delete_chat(self, chat_title):
+        chat = self.chat_repo.get_by_title(chat_title)
+        if chat is None:
+            raise Exception
+        self.chat_repo.remove(chat)
+
+    @join_point
+    @validate_with_dto
+    def add_chat(self, chat_info: ChatInfo):
+        user = chat_info.create_obj(Chat)
+        self.chat_repo.add(user)
 
 
 @component
-class ChatMessageService:
-    chat_message: interfaces.ChatMessagesRepo
+class Message:
+    user_repo: interfaces.UsersRepo
+    chat_repo: interfaces.ChatsRepo
+    chat_message_repo: interfaces.ChatMessagesRepo
+
     pass
+

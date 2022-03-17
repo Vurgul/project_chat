@@ -13,11 +13,11 @@ from .join_points import join_point
 
 @component
 class Authorization:
-    user_service: services.UserService
+    authorization: services.Authorization
 
     @join_point
     def on_post_registration(self, request, response):
-        self.user_service.add_user(**request.media)
+        self.authorization.add_user(**request.media)
         response.media = {
             "message": "Successful registration",
         }
@@ -30,13 +30,13 @@ class Authorization:
 
 @component
 class Chat:
-    chat_user_service: services.ChatUserService
+    chat: services.Chat
 
     @join_point
     def on_get_info(self, request, response):
         """Получить информацию о чате"""
 
-        chat = self.chat_user_service.get_chat_info(**request.params)
+        chat = self.chat.get_chat_info(**request.params)
         response.media = {
                 'admin': chat.admin
             }
@@ -56,8 +56,13 @@ class Chat:
     @join_point
     def on_post_create(self, request, response):
         """Создать чат"""
-
-        pass
+        self.chat.add_chat(
+            user_id=request.context.client.user_id,
+            **request.media
+        )  # TODO
+        response.media = {
+            "message": "Successful create",
+        }
 
     @join_point
     def on_post_uprate_info(self, request, response):
@@ -80,10 +85,12 @@ class Chat:
     @join_point
     def on_delete_delete_chat(self, request, response):
         """ Удалить чат"""
+        self.chat.delete_chat(**request.params)
 
 
 @component
 class Message:
+    message: services.Message
 
     @join_point
     def on_get_chat_message(self, request, response):

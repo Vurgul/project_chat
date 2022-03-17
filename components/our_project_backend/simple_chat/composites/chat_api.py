@@ -24,17 +24,26 @@ class DB:
 
 
 class Application:
-    chat_user_service = services.ChatUserService(
-        chat_repo=DB.chats_repo,
-    )
-    user_service = services.UserService(
+    authorization = services.Authorization(
         user_repo=DB.users_repo,
+    )
+    chat = services.Chat(
+        user_repo=DB.users_repo,
+        chat_repo=DB.chats_repo,
+        chat_member_repo=DB.chat_members_repo,
+        chat_message_repo=DB.chat_messages_repo
+    )
+    message = services.Message(
+        user_repo=DB.users_repo,
+        chat_repo=DB.chats_repo,
+        chat_message_repo=DB.chat_messages_repo
     )
 
 
 app = chat_api.create_app(
-    chat=Application.chat_user_service,
-    user=Application.user_service,
+    authorization=Application.authorization,
+    chat=Application.chat,
+    message=Application.message,
 )
 
 if __name__ == '__main__':

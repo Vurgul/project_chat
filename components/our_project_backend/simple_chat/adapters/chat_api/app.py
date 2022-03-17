@@ -12,15 +12,15 @@ from . import auth, controllers
 
 
 def create_app(
-    chat: services.ChatUserService,
-    user: services.UserService,
-    message: services.ChatMessageService,
-    member: services.ChatMemberService
+    chat: services.Chat,
+    authorization: services.Authorization,
+    message: services.Message,
 ) -> App:
 
     app = App()
-    app.register(controllers.Chat(chat_user_service=chat))
-    app.register(controllers.Authorization(user_service=user))
+    app.register(controllers.Chat(chat=chat))
+    app.register(controllers.Authorization(authorization=authorization))
+    app.register(controllers.Message(message=message))
 
     return app
 
