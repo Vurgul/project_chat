@@ -39,6 +39,10 @@ class ChatsRepo(ABC):
     def remove(self, chat: Chat):
         ...
 
+    @abstractmethod
+    def update(self, chat: Chat, date) -> Chat:
+        ...
+
 
 class ChatMessages(ABC):
 

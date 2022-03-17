@@ -6,8 +6,20 @@ from classic.components import component
 from classic.sql_storage import BaseRepository
 
 from simple_chat.application import interfaces
-from simple_chat.application.dataclasses import User # нужно реализовать
+from simple_chat.application.dataclasses import User, Chat  # нужно реализовать
+
+#@component
+#class UsersRepo(BaseRepository, interfaces.UserRepo):
+#    pass
+
 
 @component
-class UsersRepo(BaseRepository, interfaces.UserRepo):
-    pass
+class ChatsRepo(BaseRepository, interfaces.ChatsRepo):
+
+    def update(self, chat, data):
+        # Работы с логикой БД
+        pass
+
+    def get_by_id(self, id_) -> Optional[Chat]:
+        query = select(Chat).where(Chat.id == id_)
+        return self.session.execute(query).scalars().one_or_none()

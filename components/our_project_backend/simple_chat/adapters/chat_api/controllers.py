@@ -19,3 +19,15 @@ class Login:
     @join_point
     def on_post_login(self, request, response):
         pass
+
+
+@component
+class Chats:
+    chat_user_service: services.ChatUserService
+
+    @join_point
+    def on_get_info(self, request, response):
+        chat = self.chat_user_service.get_chat_info(**request.params)
+        response.media = {
+                'admin': chat.admin
+            }

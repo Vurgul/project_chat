@@ -12,11 +12,13 @@ from . import auth, controllers
 
 
 def create_app(
-
+    chat: services.ChatUserService
 ) -> App:
-    ...
+
+    app = App()
+    app.register(controllers.Chats(chat_user_service=chat))
     # return app
-    pass
+    return app
 
 # Тут регистрация наших контроллеров, объявление миллваров, создание url
 # создание основного приложения

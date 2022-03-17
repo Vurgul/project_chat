@@ -8,32 +8,32 @@ import attr
 
 @attr.dataclass
 class User:
-    id: int
     login: str
     password: str
+    id: Optional[int] = None
 
 
 @attr.dataclass
 class Chat:
-    id: int
     admin: User
     title: str
+    id: Optional[int] = None
     members: List['ChatMember'] = attr.ib(factory=list)
     message: List['ChatMessage'] = attr.ib(factory=list)
 
 
 @attr.dataclass
 class ChatMessage:
-    id: int
     chat: Chat
     user: User
     text: str
+    id: Optional[int] = None
 
 
 @attr.dataclass
 class ChatMember:
-    id: int
     chat: Chat
     user: User
     former_members: bool
     black_list: bool
+    id: Optional[int] = None

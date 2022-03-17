@@ -20,5 +20,13 @@ class UserInfo(DTO):
     login: str
     password: str
 
+@component
+class ChatUserService:
+    chat_repo: interfaces.ChatsRepo
 
-
+    @join_point
+    def get_chat_info(self, chat_id) -> Chat:
+        chat = self.chat_repo.get_by_id(chat_id)
+        if chat is None:
+            raise errors.AppError
+        return chat
