@@ -100,3 +100,5 @@ Temporary Items
 .idea/
 /tmp/
 data.db
+data.db-journal
+

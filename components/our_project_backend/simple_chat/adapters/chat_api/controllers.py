@@ -39,7 +39,7 @@ class Chat:
         chat = self.chat.get_chat_info(**request.params)
         response.media = {
                 'admin': chat.admin
-            }
+        }
 
     @join_point
     def on_get_user_info(self, request, response):

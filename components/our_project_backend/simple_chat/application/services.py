@@ -40,7 +40,7 @@ class Authorization:
     def get_user_info(self, user_id) -> User:
         user = self.user_repo.get_by_id(user_id)
         if user in None:
-            raise Exception
+            raise errors.NoUser(field='id', id=user_id)
         return user
 
 
@@ -55,14 +55,14 @@ class Chat:
     def get_chat_info(self, chat_id) -> Chat:
         chat = self.chat_repo.get_by_id(chat_id)
         if chat is None:
-            raise Exception
+            raise errors.NoChat(id=chat_id)
         return chat
 
     @join_point
     def delete_chat(self, chat_title):
         chat = self.chat_repo.get_by_title(chat_title)
         if chat is None:
-            raise Exception
+            raise errors.NoChat(field='title', title=chat_title)
         self.chat_repo.remove(chat)
 
     @join_point

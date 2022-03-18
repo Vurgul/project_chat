@@ -33,19 +33,11 @@ class ChatsRepo(ABC):
         ...
 
     @abstractmethod
-    def add(self, chat: Chat):
-        ...
-
-    @abstractmethod
-    def get_or_create(self, id_: Optional[int]) -> Chat:
-        ...
-
-    @abstractmethod
     def remove(self, chat: Chat):
         ...
 
     @abstractmethod
-    def update(self, chat: Chat, date) -> Chat:
+    def add(self, chat: Chat):
         ...
 
 
@@ -59,10 +51,6 @@ class ChatMessagesRepo(ABC):
     def add(self, chat_message: ChatMessage):
         ...
 
-    @abstractmethod
-    def get_or_create(self, id_: Optional[int]) -> ChatMessage:
-        ...
-
 
 class ChatMembersRepo(ABC):
 
@@ -73,9 +61,3 @@ class ChatMembersRepo(ABC):
     @abstractmethod
     def add(self, chat_member: ChatMember):
         ...
-
-    @abstractmethod
-    def get_or_create(self, id_: Optional[int]) -> ChatMessage:
-        ...
-
-
