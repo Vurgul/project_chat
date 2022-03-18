@@ -39,6 +39,10 @@ class Application:
         chat_message_repo=DB.chat_messages_repo
     )
 
+class Aspects:
+    services.join_points.join(DB.context)
+    chat_api.join_points.join(DB.context)
+
 
 app = chat_api.create_app(
     authorization=Application.authorization,
@@ -51,4 +55,3 @@ if __name__ == '__main__':
     with simple_server.make_server('localhost', 8000, app=app) as server:
         print(f'Server running on http://localhost:{server.server_port} ...')
         server.serve_forever()
-

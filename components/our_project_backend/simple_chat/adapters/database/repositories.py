@@ -23,7 +23,7 @@ class UsersRepo(BaseRepository, interfaces.UsersRepo):
 
     def add(self, user: User):
         self.session.add(user)
-        self.session.commit()
+        self.session.flush()
 
 
 @component
@@ -42,8 +42,7 @@ class ChatsRepo(BaseRepository, interfaces.ChatsRepo):
 
     def add(self, chat: Chat):
         self.session.add(chat)
-        self.session.commit()
-
+        self.session.flush()
 
 
 @component
