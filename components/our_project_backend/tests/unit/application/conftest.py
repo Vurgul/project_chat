@@ -6,32 +6,32 @@ from simple_chat.application import interfaces
 
 
 @pytest.fixture(scope='function')
-def users_repo(user_1, user_2, user_3):
-    users_repo = Mock(interfaces.UsersRepo)
-    users_repo.get_by_user_id = Mock(return_value=[user_1, user_2, user_3])
-    return users_repo
+def user_repo(user_1, user_2, user_3):
+    user_repo = Mock(interfaces.UsersRepo)
+    user_repo.get_by_id = Mock(return_value=user_1)  # [user_1, user_2, user_3]
+    return user_repo
 
 
 @pytest.fixture(scope='function')
-def chats_repo(chat_1, chat_2):
-    chats_repo = Mock(interfaces.ChatsRepo)
-    chats_repo.get_by_chat_id = Mock(return_value=[chat_1, chat_2])
-    return chats_repo
+def chat_repo(chat_1, chat_2):
+    chat_repo = Mock(interfaces.ChatsRepo)
+    chat_repo.get_by_chat_id = Mock(return_value=[chat_1, chat_2])
+    return chat_repo
 
 
 @pytest.fixture(scope='function')
-def messages_repo(chat_message_1, chat_message_2):
-    messages_repo = Mock(interfaces.ChatMessagesRepo)
-    messages_repo.get_by_message_id = Mock(
+def message_repo(chat_message_1, chat_message_2):
+    message_repo = Mock(interfaces.ChatMessagesRepo)
+    message_repo.get_by_message_id = Mock(
         return_value=[chat_message_1, chat_message_2]
     )
-    return messages_repo
+    return message_repo
 
 
 @pytest.fixture(scope='function')
-def members_repo(chat_member_1, chat_member_2, chat_member_3):
-    members_repo = Mock(interfaces.ChatMembersRepo)
-    members_repo.get_by_member_id = Mock(
+def member_repo(chat_member_1, chat_member_2, chat_member_3):
+    member_repo = Mock(interfaces.ChatMembersRepo)
+    member_repo.get_by_member_id = Mock(
         return_value=[chat_member_1, chat_member_2, chat_member_3]
     )
-    return members_repo
+    return member_repo
