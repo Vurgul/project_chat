@@ -1,9 +1,7 @@
-from sqlalchemy import create_engine # почитать
-
 from classic.sql_storage import TransactionContext
-
-from simple_chat.adapters import database, chat_api
+from simple_chat.adapters import chat_api, database
 from simple_chat.application import services
+from sqlalchemy import create_engine  # почитать
 
 
 class Settings:
@@ -27,17 +25,18 @@ class Application:
     authorization = services.Authorization(
         user_repo=DB.users_repo,
     )
-    chat = services.Chat(
+    chat = services.ChatManager(
         user_repo=DB.users_repo,
         chat_repo=DB.chats_repo,
         chat_member_repo=DB.chat_members_repo,
-        chat_message_repo=DB.chat_messages_repo
+        chat_message_repo=DB.chat_messages_repo,
     )
     message = services.Message(
         user_repo=DB.users_repo,
         chat_repo=DB.chats_repo,
-        chat_message_repo=DB.chat_messages_repo
+        chat_message_repo=DB.chat_messages_repo,
     )
+
 
 class Aspects:
     services.join_points.join(DB.context)

@@ -2,7 +2,6 @@ from unittest.mock import Mock
 
 import pytest
 from falcon import testing
-
 from simple_shop.adapters import shop_api
 from simple_shop.application import services
 

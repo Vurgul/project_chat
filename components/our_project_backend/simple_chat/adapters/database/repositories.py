@@ -1,24 +1,22 @@
 from typing import List, Optional
 
-from sqlalchemy import select
-
 from classic.components import component
 from classic.sql_storage import BaseRepository
-
 from simple_chat.application import interfaces
-from simple_chat.application.dataclasses import User, Chat
-from simple_chat.application.dataclasses import ChatMessage, ChatMember
+from simple_chat.application.dataclasses import (Chat, ChatMember, ChatMessage,
+                                                 User)
+from sqlalchemy import select
 
 
 @component
 class UsersRepo(BaseRepository, interfaces.UsersRepo):
 
-    def get_by_id(self, id_: int) -> Optional[User]:
-        query = select(User).where(User.id == id_)
+    def get_by_id(self, id: int) -> Optional[User]:
+        query = select(User).where(User.id == id)
         return self.session.execute(query).scalars().one_or_none()
 
-    def get_by_login(self, login_: int) -> Optional[User]:
-        query = select(User).where(User.login == login_)
+    def get_by_login(self, login: int) -> Optional[User]:
+        query = select(User).where(User.login == login)
         return self.session.execute(query).scalars().one_or_none()
 
     def add(self, user: User):
@@ -53,7 +51,8 @@ class ChatMessagesRepo(BaseRepository, interfaces.ChatMessagesRepo):
         return self.session.execute(query).scalars().one_or_none()
 
     def add(self, chat_message: ChatMessage):
-        pass
+        self.session.add(chat_message)
+        self.session.flush()
 
 
 @component
@@ -64,5 +63,6 @@ class ChatMembersRepo(BaseRepository, interfaces.ChatMembersRepo):
         return self.session.execute(query).scalars().one_or_none()
 
     def add(self, chat_member: ChatMember):
-        pass
+        self.session.add(chat_member)
+        self.session.flush()
 

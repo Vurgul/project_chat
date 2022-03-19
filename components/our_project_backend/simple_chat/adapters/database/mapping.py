@@ -1,6 +1,5 @@
-from sqlalchemy.orm import registry, relationship
-
 from simple_chat.application import dataclasses
+from sqlalchemy.orm import registry, relationship
 
 from . import tables
 

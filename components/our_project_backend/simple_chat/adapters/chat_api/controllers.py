@@ -1,10 +1,5 @@
 from classic.components import component
-from classic.http_auth import (
-    authenticate,
-    authenticator_needed,
-    authorize,
-)
-
+from classic.http_auth import authenticate, authenticator_needed, authorize
 from simple_chat.application import services
 
 from .auth import Groups, Permissions  # Для декоратора @authorize
@@ -18,74 +13,75 @@ class Authorization:
     @join_point
     def on_post_registration(self, request, response):
         self.authorization.add_user(**request.media)
-        response.media = {
-            "message": "Successful registration",
-        }
 
     @join_point
     def on_post_authentication(self, request, response):
         """ Прохождение аутентификации -> авторизация"""
+
+        # TODO: Реализовать логику аутентификации
+        response.media = {'user_id': ''}
         pass
 
 
 @component
-class Chat:
-    chat: services.Chat
+class ChatManager:
+    chat: services.ChatManager
 
     @join_point
     def on_get_info(self, request, response):
         """Получить информацию о чате"""
-
-        chat = self.chat.get_chat_info(**request.params)
+        chat, user = self.chat.get_chat_info(**request.params)
         response.media = {
-                'admin': chat.admin
+                'title': chat.title,
+                'user_id': user.login
         }
 
     @join_point
-    def on_get_user_info(self, request, response):
+    def on_get_users_info(self, request, response):
         """ Получить список участников чата"""
-
-        pass
+        users = self.chat.get_users_info(**request.params)
+        response.media = {
+            'users': users
+        }
 
     @join_point
-    def on_get_leave(self, request, response):
+    def on_post_leave(self, request, response):
         """ Покинуть чат"""
-
+        # TODO: Если останется время
         pass
 
     @join_point
     def on_post_create(self, request, response):
         """Создать чат"""
-        self.chat.add_chat(
-            user_id=request.context.client.user_id,
-            **request.media
-        )  # TODO
-        response.media = {
-            "message": "Successful create",
-        }
+        self.chat.create_chat(
+            **request.media,
+        )
 
     @join_point
-    def on_post_uprate_info(self, request, response):
+    def on_post_update_info(self, request, response):
         """ Обновить информацию о чате"""
-
-        pass
+        self.chat.update_chat_info(
+            **request.media
+        )
 
     @join_point
     def on_post_add_user(self, request, response):
         """ Добавить участника"""
-
-        pass
+        self.chat.add_user_to_chat(
+            **request.media
+        )
 
     @join_point
-    def on_delete_kick_user(self, request, response):
+    def on_post_kick_user(self, request, response):
         """ Удалить участника """
-
         pass
 
     @join_point
-    def on_delete_delete_chat(self, request, response):
+    def on_post_delete_chat(self, request, response):
         """ Удалить чат"""
-        self.chat.delete_chat(**request.params)
+        self.chat.delete_chat(
+            **request.media
+        )
 
 
 @component

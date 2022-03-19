@@ -15,8 +15,9 @@ class User:
 
 @attr.dataclass
 class Chat:
-    admin: User
     title: str
+    user_id: int
+    #admin: Optional[User] = None
     id: Optional[int] = None
     members: List['ChatMember'] = attr.ib(factory=list)
     messages: List['ChatMessage'] = attr.ib(factory=list)
@@ -64,8 +65,11 @@ class ChatMessage:
 
 @attr.dataclass
 class ChatMember:
-    chat: Chat
-    user: User
-    former_members: bool
-    black_list: bool
+    user_id: User
+    chat_id: Chat
+    #user: User
+    #chat: Chat
+
+    former_members: Optional[bool] = False
+    black_list: Optional[bool] = False
     id: Optional[int] = None

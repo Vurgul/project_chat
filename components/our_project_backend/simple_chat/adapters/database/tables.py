@@ -1,12 +1,5 @@
-from sqlalchemy import (
-    Column,
-    Boolean,
-    ForeignKey,
-    Integer,
-    MetaData,
-    String,
-    Table,
-)
+from sqlalchemy import (Boolean, Column, ForeignKey, Integer, MetaData, String,
+                        Table)
 
 naming_convention = {
     'ix': 'ix_%(column_0_label)s',
@@ -34,7 +27,7 @@ chats = Table(
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('user_id', ForeignKey('users.id'), nullable=False),
-    Column('title', String, nullable=False, unique=True),
+    Column('title', String, nullable=False),
 )
 
 chats_message = Table(
