@@ -1,7 +1,7 @@
 from classic.sql_storage import TransactionContext
 from simple_chat.adapters import chat_api, database
 from simple_chat.application import services
-from sqlalchemy import create_engine  # почитать
+from sqlalchemy import create_engine
 
 
 class Settings:
@@ -35,6 +35,7 @@ class Application:
         user_repo=DB.users_repo,
         chat_repo=DB.chats_repo,
         chat_message_repo=DB.chat_messages_repo,
+        chat_member_repo=DB.chat_members_repo,
     )
 
 

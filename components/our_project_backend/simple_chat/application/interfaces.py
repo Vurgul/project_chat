@@ -44,3 +44,10 @@ class ChatMembersRepo(ABC):
 
     @abstractmethod
     def add(self, chat_member: ChatMember): ...
+
+    @abstractmethod
+    def get_by_fields(self, chat_id: int, user_id: int) -> Optional[ChatMember]:
+        ...
+
+    @abstractmethod
+    def remove(self, member: ChatMember): ...

@@ -1,5 +1,5 @@
 from sqlalchemy import (Boolean, Column, ForeignKey, Integer, MetaData, String,
-                        Table)
+                        Table, UniqueConstraint)
 
 naming_convention = {
     'ix': 'ix_%(column_0_label)s',
@@ -8,9 +8,6 @@ naming_convention = {
     'fk': 'fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s',
     'pk': 'pk_%(table_name)s'
 }
-
-# даем имя схемы только для БД MSSQL, связано с инфраструктурными особенностями
-# metadata = MetaData(naming_convention=naming_convention, schema='app')
 
 metadata = MetaData(naming_convention=naming_convention)
 
@@ -47,4 +44,5 @@ chats_member = Table(
     Column('user_id', ForeignKey('users.id'), nullable=False),
     Column('former_members', Boolean, default=False),
     Column('black_list', Boolean, default=False),
+    UniqueConstraint('chat_id', 'user_id')
 )

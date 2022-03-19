@@ -47,8 +47,9 @@ class ChatManager:
     @join_point
     def on_post_leave(self, request, response):
         """ Покинуть чат"""
-        # TODO: Если останется время
-        pass
+        self.chat.leave_chat(
+            **request.media
+        )
 
     @join_point
     def on_post_create(self, request, response):
@@ -73,7 +74,8 @@ class ChatManager:
 
     @join_point
     def on_post_kick_user(self, request, response):
-        """ Удалить участника """
+        """ Удалить / Выгнать участника чата"""
+        # TODO: Если останется время
         pass
 
     @join_point
@@ -89,13 +91,14 @@ class Message:
     message: services.Message
 
     @join_point
-    def on_get_chat_message(self, request, response):
+    def on_get_messages(self, request, response):
         """ Получить список сообщений чата"""
-
-        pass
+        messages = self.message.get_chat_messages(**request.params)
+        response.media = {
+            'messages': messages
+        }
 
     @join_point
     def on_post_send(self, request, response):
         """ Отправка сообщения в чат"""
-
-        pass
+        self.message.add_massage_to_chat(**request.media)

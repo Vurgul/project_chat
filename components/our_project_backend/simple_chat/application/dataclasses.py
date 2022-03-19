@@ -2,9 +2,6 @@ from typing import List, Optional
 
 import attr
 
-# Датаклассы наших сущностей
-# Допускается указание методов
-
 
 @attr.dataclass
 class User:
@@ -57,16 +54,18 @@ class Chat:
 
 @attr.dataclass
 class ChatMessage:
-    chat: Chat
-    user: User
+    user_id: int
+    chat_id: int
+    #chat: Chat
+    #user: User
     text: str
     id: Optional[int] = None
 
 
 @attr.dataclass
 class ChatMember:
-    user_id: User
-    chat_id: Chat
+    user_id: int
+    chat_id: int
     #user: User
     #chat: Chat
 

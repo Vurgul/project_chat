@@ -1,7 +1,5 @@
 from classic.app.errors import AppError
 
-# Наши исключения/ошибки
-
 
 class NoUser(AppError):
     msg_template = 'No user with id {id}'
@@ -15,4 +13,9 @@ class NoChat(AppError):
 
 class UserNotOwnerChat(AppError):
     msg_template = 'User with id {user_id} not owner chat with id {chat_id}'
-    code = 'chat.no_chat'
+    code = 'chat.not_user_owner'
+
+
+class NoUserInChat(AppError):
+    msg_template = 'User with id {user_id} not in chat with id {chat_id}'
+    code = 'chat.no_user_in_chat'

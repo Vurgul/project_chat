@@ -3,12 +3,11 @@ from typing import List, Optional, Tuple
 from classic.app import DTO, validate_with_dto
 from classic.aspects import PointCut
 from classic.components import component
-from pydantic import conint, validate_arguments
+from pydantic import validate_arguments
 
 from . import errors, interfaces
 from .dataclasses import Chat, ChatMember, ChatMessage, User
 
-# Тут наши сервисы
 join_points = PointCut()
 join_point = join_points.join_point
 
@@ -25,27 +24,22 @@ class ChatInfo(DTO):
     user_id: Optional[int] = None
 
 
+class MemberInfo(DTO):
+    user_id: int
+    chat_id: int
+
+
+class MessageInfo(DTO):
+    user_id: int
+    chat_id: int
+    text: str
+
+
 class ChatCreateInfo(DTO):
     user_id: int
     title: str
     id: Optional[int]
 
-
-class ChatUpdateInfo(DTO):
-    user_id: int
-    chat_id: int
-    title: str
-    id: Optional[int]
-
-
-class ChatValidate(DTO):
-    user_id: int
-    chat_id: int
-
-
-class MemberInfo(DTO):
-    user_id: int
-    chat_id: int
 
 @component
 class Authorization:
@@ -86,6 +80,7 @@ class ChatManager:
             raise errors.NoUser(id=user_id)
         return user
 
+
     @join_point
     @validate_arguments
     def get_chat_info(self, chat_id: int) -> Tuple[Chat, User]:
@@ -109,12 +104,12 @@ class ChatManager:
 
     @join_point
     @validate_arguments
-    def get_users_info(self, chat_id: int):
+    def get_users_info(self, chat_id: int) -> List:
         chat = self.get_chat(chat_id)
         temp_user_list = []
-        for user in chat.members:
-            print(user)
-            temp_user_list.append(user)
+        for member in chat.members:
+            user_login = self.get_user(member.user_id).login
+            temp_user_list.append(user_login)
         return temp_user_list
 
     @join_point
@@ -126,9 +121,9 @@ class ChatManager:
 
     @join_point
     @validate_arguments
-    def leave_chat(self, chat_id: int):
-        # TODO: Если останется время
-        pass
+    def leave_chat(self, chat_id: int, user_id: int):
+        member = self._validate_user_in_chat(chat_id, user_id)
+        self.chat_member_repo.remove(member)
 
     @join_point
     @validate_with_dto
@@ -138,9 +133,7 @@ class ChatManager:
 
     @validate_with_dto
     def create_member(self, member_info: MemberInfo) -> ChatMember:
-        print(member_info)
         member = member_info.create_obj(ChatMember)
-        print(member)
         self.chat_member_repo.add(member)
         return member
 
@@ -160,12 +153,49 @@ class ChatManager:
             raise errors.UserNotOwnerChat(user_id=user.id, chat_id=chat.user_id)
         return chat
 
+    @validate_arguments
+    def _validate_user_in_chat(self, chat_id: int, user_id: int) -> ChatMember:
+        member = self.chat_member_repo.get_by_fields(chat_id, user_id)
+        if member is None:
+            raise errors.NoUserInChat(user_id=user_id, chat_id=chat_id)
+        return member
+
 
 @component
 class Message:
     user_repo: interfaces.UsersRepo
     chat_repo: interfaces.ChatsRepo
     chat_message_repo: interfaces.ChatMessagesRepo
+    chat_member_repo: interfaces.ChatMembersRepo
 
-    pass
+    @validate_arguments
+    def _validate_user_in_chat(self, chat_id: int, user_id: int) -> Chat:
+        member = self.chat_member_repo.get_by_fields(chat_id, user_id)
+        if member is None:
+            raise errors.NoUserInChat(user_id=user_id, chat_id=chat_id)
+        chat = self.chat_repo.get_by_id(chat_id)
+        if chat is None:
+            raise errors.NoChat(id=chat_id)
+        return chat
 
+    @validate_arguments
+    def get_chat_messages(self, chat_id: int, user_id: int) -> List:
+        chat = self._validate_user_in_chat(chat_id, user_id)
+        temp_massages_list = []
+        for message in chat.messages:
+            temp_massages_list.append(message.text)
+        return temp_massages_list
+
+
+    @validate_with_dto
+    def create_massage(self, message_info: MessageInfo) -> ChatMessage:
+        message = message_info.create_obj(ChatMessage)
+        self.chat_message_repo.add(message)
+        return message
+
+    @validate_arguments
+    def add_massage_to_chat(self, chat_id: int, user_id: int, text: str):
+        chat = self._validate_user_in_chat(chat_id, user_id)
+        message_info = MessageInfo(chat_id=chat_id, user_id=user_id, text=text)
+        message = self.create_massage(**message_info.dict())
+        chat.add_message(message)

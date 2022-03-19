@@ -41,6 +41,6 @@ mapper.map_imperatively(
             dataclasses.User, uselist=False, lazy='joined'
         ),
         'members': relationship(dataclasses.ChatMember, lazy='subquery'),
-        'message': relationship(dataclasses.ChatMessage, lazy='subquery'),
+        'messages': relationship(dataclasses.ChatMessage, lazy='subquery'),
     }
 )
