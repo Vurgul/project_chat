@@ -1,3 +1,5 @@
+import jwt
+
 from typing import List, Optional, Tuple
 
 from classic.app import DTO, validate_with_dto
@@ -13,9 +15,9 @@ join_point = join_points.join_point
 
 
 class UserInfo(DTO):
-    id: Optional[int]
     login: str
     password: str
+    id: Optional[int]
 
 
 class ChatInfo(DTO):
@@ -52,11 +54,28 @@ class Authorization:
         self.user_repo.add(user)
 
     @join_point
-    def get_user_info(self, user_id) -> User:
+    @validate_arguments
+    def get_user_info(self, user_id: int) -> User:
         user = self.user_repo.get_by_id(user_id)
-        if user in None:
+        if user is None:
             raise errors.NoUser(id=user_id)
         return user
+
+    @join_point
+    @validate_arguments
+    def get_token(self, user_id: int):
+        user = self.get_user_info(user_id)
+        token = jwt.encode(
+            {
+                'sub': user.id,
+                'login': user.login,
+                'name': user.login,
+                'group': 'User'
+            },
+            'auth_secret_key',
+            algorithm='HS256'
+        )
+        return token
 
 
 @component
@@ -83,7 +102,8 @@ class ChatManager:
 
     @join_point
     @validate_arguments
-    def get_chat_info(self, chat_id: int) -> Tuple[Chat, User]:
+    def get_chat_info(self, chat_id: int, user_id: int) -> Tuple[Chat, User]:
+        self._validate_user_in_chat(chat_id, user_id)
         chat = self.chat_repo.get_by_id(chat_id)
         user = self.user_repo.get_by_id(chat.user_id)
         if chat is None:
@@ -94,6 +114,10 @@ class ChatManager:
     @validate_arguments
     def delete_chat(self, chat_id: int, user_id: int) -> None:
         chat = self._validate_owner_chat(chat_id, user_id)
+        for members in chat.members:
+            self.chat_member_repo.remove(members)
+        for message in chat.messages:
+            self.chat_message_repo.remove(message)
         self.chat_repo.remove(chat)
 
     @join_point
@@ -104,7 +128,8 @@ class ChatManager:
 
     @join_point
     @validate_arguments
-    def get_users_info(self, chat_id: int) -> List:
+    def get_users_info(self, chat_id: int, user_id: int) -> List:
+        self._validate_user_in_chat(chat_id, user_id)
         chat = self.get_chat(chat_id)
         temp_user_list = []
         for member in chat.members:
@@ -123,17 +148,32 @@ class ChatManager:
     @validate_arguments
     def leave_chat(self, chat_id: int, user_id: int):
         member = self._validate_user_in_chat(chat_id, user_id)
-        self.chat_member_repo.remove(member)
+        if self._validate_owner_chat(chat_id, user_id):
+            self.delete_chat(chat_id, user_id)
+        else:
+            self.chat_member_repo.remove(member)
+
 
     @join_point
     @validate_with_dto
     def create_chat(self, chat_info: ChatCreateInfo):
         chat = chat_info.create_obj(Chat)
         self.user_repo.add(chat)
+        self.add_user_to_chat(chat.id, chat.user_id, chat.user_id)
 
     @validate_with_dto
     def create_member(self, member_info: MemberInfo) -> ChatMember:
         member = member_info.create_obj(ChatMember)
+        find_member = self.chat_member_repo.get_by_fields(
+            chat_id=member.chat_id,
+            user_id=member.user_id
+        )
+        if find_member is not None:
+            raise errors.UserAlreadyInChat(
+                user_id=member.user_id,
+                chat_id=member.chat_id
+            )
+
         self.chat_member_repo.add(member)
         return member
 

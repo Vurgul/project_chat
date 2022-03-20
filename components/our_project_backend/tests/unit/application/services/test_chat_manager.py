@@ -21,8 +21,8 @@ def service(user_repo, chat_repo, message_repo, member_repo):
     )
 
 
-def test_get_chat(service):
-    pass
+def test_get_chat(service, chat_1):
+    service.get_chat.get_user_info(chat_1.id)
 
 
 def test_get_user(service):

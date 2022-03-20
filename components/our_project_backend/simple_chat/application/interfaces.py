@@ -36,6 +36,9 @@ class ChatMessagesRepo(ABC):
     @abstractmethod
     def add(self, chat_message: ChatMessage): ...
 
+    @abstractmethod
+    def remove(self, message: ChatMessage): ...
+
 
 class ChatMembersRepo(ABC):
 

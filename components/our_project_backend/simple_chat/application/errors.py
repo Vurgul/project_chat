@@ -19,3 +19,8 @@ class UserNotOwnerChat(AppError):
 class NoUserInChat(AppError):
     msg_template = 'User with id {user_id} not in chat with id {chat_id}'
     code = 'chat.no_user_in_chat'
+
+
+class UserAlreadyInChat(AppError):
+    msg_template = 'User with id {user_id} already in chat with id {chat_id}'
+    code = 'chat.user_already_in_chat'

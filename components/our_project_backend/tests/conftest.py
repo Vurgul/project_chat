@@ -78,7 +78,7 @@ def chat_member_3():
 
 
 @pytest.fixture(scope='function')
-def chat_1():
+def chat_1(chat_member_1, chat_member_2, chat_member_3, chat_message_1, chat_message_2):
     return dataclasses.Chat(
         id=1,
         user_id=1,

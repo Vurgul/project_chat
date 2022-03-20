@@ -54,6 +54,9 @@ class ChatMessagesRepo(BaseRepository, interfaces.ChatMessagesRepo):
         self.session.add(chat_message)
         self.session.flush()
 
+    def remove(self, message: ChatMessage):
+        self.session.delete(message)
+
 
 @component
 class ChatMembersRepo(BaseRepository, interfaces.ChatMembersRepo):
@@ -63,6 +66,7 @@ class ChatMembersRepo(BaseRepository, interfaces.ChatMembersRepo):
         return self.session.execute(query).scalars().one_or_none()
 
     def add(self, chat_member: ChatMember):
+
         self.session.add(chat_member)
         self.session.flush()
 

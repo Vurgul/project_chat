@@ -15,13 +15,24 @@ def create_app(
     message: services.Message,
 ) -> App:
 
+    authenticator = Authenticator(app_groups=auth.ALL_GROUPS)
+    authenticator.set_strategies(auth.jwt_strategy)
+
     app = App()
-    app.register(controllers.ChatManager(chat=chat))
-    app.register(controllers.Authorization(authorization=authorization))
-    app.register(controllers.Message(message=message))
+    app.register(controllers.ChatManager(
+        authenticator=authenticator,
+        chat=chat
+        )
+    )
+    app.register(controllers.Authorization(
+        #authenticator=authenticator,
+        authorization=authorization
+        )
+    )
+    app.register(controllers.Message(
+        authenticator=authenticator,
+        message=message,
+        )
+    )
 
     return app
-
-# Тут регистрация наших контроллеров, объявление миллваров, создание url
-# создание основного приложения
-

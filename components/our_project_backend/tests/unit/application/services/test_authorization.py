@@ -21,6 +21,6 @@ def test_add_user(service):
     service.user_repo.add.assert_called_once()
 
 
-def test_get_user_info(service, user_1):
+def test__get_user_info(service, user_repo, user_1):
     user = service.get_user_info(user_id=1)
     assert user == user_1
