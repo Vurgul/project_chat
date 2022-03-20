@@ -121,12 +121,6 @@ class ChatManager:
         self.chat_repo.remove(chat)
 
     @join_point
-    @validate_with_dto
-    def add_chat(self, chat_info: ChatInfo):
-        user = chat_info.create_obj(Chat)
-        self.chat_repo.add(user)
-
-    @join_point
     @validate_arguments
     def get_users_info(self, chat_id: int, user_id: int) -> List:
         self._validate_user_in_chat(chat_id, user_id)
@@ -153,12 +147,11 @@ class ChatManager:
         else:
             self.chat_member_repo.remove(member)
 
-
     @join_point
     @validate_with_dto
     def create_chat(self, chat_info: ChatCreateInfo):
         chat = chat_info.create_obj(Chat)
-        self.user_repo.add(chat)
+        self.chat_repo.add(chat)
         self.add_user_to_chat(chat.id, chat.user_id, chat.user_id)
 
     @validate_with_dto
@@ -225,7 +218,6 @@ class Message:
         for message in chat.messages:
             temp_massages_list.append(message.text)
         return temp_massages_list
-
 
     @validate_with_dto
     def create_massage(self, message_info: MessageInfo) -> ChatMessage:

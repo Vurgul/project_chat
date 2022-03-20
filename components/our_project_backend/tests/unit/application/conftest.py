@@ -6,16 +6,16 @@ from simple_chat.application import interfaces
 
 
 @pytest.fixture(scope='function')
-def user_repo(user_1):
+def user_repo(user_1, user_2):
     user_repo = Mock(interfaces.UsersRepo)
     user_repo.get_by_id = Mock(return_value=user_1)  # [user_1, user_2, user_3]
     return user_repo
 
 
 @pytest.fixture(scope='function')
-def chat_repo(chat_1, chat_2):
+def chat_repo(chat_1):
     chat_repo = Mock(interfaces.ChatsRepo)
-    chat_repo.get_by_chat_id = Mock(return_value=[chat_1, chat_2])
+    chat_repo.get_by_id = Mock(return_value=chat_1)
     return chat_repo
 
 
@@ -29,9 +29,24 @@ def message_repo(chat_message_1, chat_message_2):
 
 
 @pytest.fixture(scope='function')
-def member_repo(chat_member_1, chat_member_2, chat_member_3):
+def member_repo(chat_member_1):
     member_repo = Mock(interfaces.ChatMembersRepo)
     member_repo.get_by_member_id = Mock(
-        return_value=[chat_member_1, chat_member_2, chat_member_3]
+        return_value=chat_member_1,
+    )
+    member_repo.get_by_fields = Mock(
+        return_value=chat_member_1,
+    )
+    return member_repo
+
+
+@pytest.fixture(scope='function')
+def member_repo_none(chat_member_1):
+    member_repo = Mock(interfaces.ChatMembersRepo)
+    member_repo.get_by_member_id = Mock(
+        return_value=chat_member_1
+    )
+    member_repo.get_by_fields = Mock(
+        return_value=None
     )
     return member_repo
