@@ -1,7 +1,6 @@
-import jwt
-
 from typing import List, Optional, Tuple
 
+import jwt
 from classic.app import DTO, validate_with_dto
 from classic.aspects import PointCut
 from classic.components import component
@@ -63,7 +62,7 @@ class Authorization:
 
     @join_point
     @validate_arguments
-    def get_token(self, user_id: int):
+    def get_token(self, user_id: int) -> str:
         user = self.get_user_info(user_id)
         token = jwt.encode(
             {
@@ -178,7 +177,6 @@ class ChatManager:
         member = self.create_member(**member_info.dict())
         chat.add_members(member)
 
-    @validate_arguments
     def _validate_owner_chat(self, chat_id: int, user_id: int) -> Chat:
         chat = self.get_chat(chat_id)
         user = self.get_user(user_id)
@@ -186,7 +184,6 @@ class ChatManager:
             raise errors.UserNotOwnerChat(user_id=user.id, chat_id=chat.user_id)
         return chat
 
-    @validate_arguments
     def _validate_user_in_chat(self, chat_id: int, user_id: int) -> ChatMember:
         member = self.chat_member_repo.get_by_fields(chat_id, user_id)
         if member is None:
