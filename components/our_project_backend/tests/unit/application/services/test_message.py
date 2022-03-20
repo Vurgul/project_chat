@@ -1,5 +1,4 @@
 import pytest
-from simple_chat.application import errors
 from simple_chat.application.services import Message
 
 data_message = {

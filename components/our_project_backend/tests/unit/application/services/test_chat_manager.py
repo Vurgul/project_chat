@@ -35,6 +35,21 @@ def service_none(user_repo, chat_repo, message_repo, member_repo_none):
     )
 
 
+@pytest.fixture(scope='function')
+def service_no_chat(
+    user_repo,
+    chat_repo_none_chat,
+    message_repo,
+    member_repo_none
+):
+    return ChatManager(
+        user_repo=user_repo,
+        chat_repo=chat_repo_none_chat,
+        chat_message_repo=message_repo,
+        chat_member_repo=member_repo_none,
+    )
+
+
 def test_get_chat(service, chat_repo, chat_1):
     chat = service.get_chat(chat_id=chat_1.id)
     assert chat == chat_1
@@ -86,6 +101,14 @@ def test_add_user_to_chat(service_none, chat_1, user_1, user_2):
         add_user_id=user_2.id
     )
     service_none.chat_member_repo.add.assert_called_once()
+
+
+def test_no_chat_in_database(service_no_chat, chat_1, user_1):
+    with pytest.raises(errors.NoChat):
+        service_no_chat.get_chat(chat_id=chat_1.id)
+        service.delete_chat(chat_id=chat_1.id, user_id=user_1.id)
+        service.get_users_info(chat_id=chat_1.id, user_id=user_1.id)
+        service.update_chat_info(**data_chat_update)
 
 
 def test_no_user_in_chat(service_none, chat_1, user_1):

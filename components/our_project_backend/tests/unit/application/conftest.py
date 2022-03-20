@@ -12,9 +12,23 @@ def user_repo(user_1, user_2):
 
 
 @pytest.fixture(scope='function')
+def user_repo_none_user(user_1, user_2):
+    user_repo = Mock(interfaces.UsersRepo)
+    user_repo.get_by_id = Mock(return_value=None)
+    return user_repo
+
+
+@pytest.fixture(scope='function')
 def chat_repo(chat_1):
     chat_repo = Mock(interfaces.ChatsRepo)
     chat_repo.get_by_id = Mock(return_value=chat_1)
+    return chat_repo
+
+
+@pytest.fixture(scope='function')
+def chat_repo_none_chat(chat_1):
+    chat_repo = Mock(interfaces.ChatsRepo)
+    chat_repo.get_by_id = Mock(return_value=None)
     return chat_repo
 
 
