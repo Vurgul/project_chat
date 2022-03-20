@@ -1,5 +1,4 @@
 import pytest
-from pydantic import ValidationError
 
 from simple_chat.application import errors
 from simple_chat.application.services import ChatManager
@@ -49,8 +48,8 @@ def test_get_user(service, user_1):
 
 def test_get_chat_info(service, user_1, chat_1):
     chat, user = service.get_chat_info(chat_id=chat_1.id, user_id=user_1.id)
-    #assert chat == chat_1
-    #assert user == user_1
+    assert chat == chat_1
+    assert user == user_1
 
 
 def test_delete_chat(service, chat_1, user_1):
@@ -88,3 +87,10 @@ def test_add_user_to_chat(service_none, chat_1, user_1, user_2):
         add_user_id=user_2.id
     )
     service_none.chat_member_repo.add.assert_called_once()
+
+
+def test_no_user_in_chat(service_none, chat_1, user_1):
+    with pytest.raises(errors.NoUserInChat):
+        service_none.get_users_info(chat_id=chat_1.id, user_id=user_1.id)
+        service_none.update_chat_info(**data_chat_update)
+        service_none.leave_chat(chat_id=chat_1.id, user_id=user_1.id)

@@ -14,7 +14,6 @@ class User:
 class Chat:
     title: str
     user_id: int
-    #admin: Optional[User] = None
     id: Optional[int] = None
     members: List['ChatMember'] = attr.ib(factory=list)
     messages: List['ChatMessage'] = attr.ib(factory=list)
@@ -56,8 +55,6 @@ class Chat:
 class ChatMessage:
     user_id: int
     chat_id: int
-    #chat: Chat
-    #user: User
     text: str
     id: Optional[int] = None
 
@@ -66,9 +63,6 @@ class ChatMessage:
 class ChatMember:
     user_id: int
     chat_id: int
-    #user: User
-    #chat: Chat
-
     former_members: Optional[bool] = False
     black_list: Optional[bool] = False
     id: Optional[int] = None

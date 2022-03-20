@@ -32,6 +32,5 @@ def test_get_token(service, user_repo, user_1, user_2):
                       "joidGVzdDEiLCJncm91cCI6IlVzZXIifQ.1Coc9tp0GYS" \
                       "mDtOT4tqg_Dy8WP4f80GKE3RsO3Z1pjc"
 
-    toket = service.get_token(user_1.id)
-    assert toket == test_work_token
-
+    token = service.get_token(user_1.id)
+    assert token == test_work_token

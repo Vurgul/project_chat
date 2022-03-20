@@ -8,7 +8,7 @@ from simple_chat.application import interfaces
 @pytest.fixture(scope='function')
 def user_repo(user_1, user_2):
     user_repo = Mock(interfaces.UsersRepo)
-    user_repo.get_by_id = Mock(return_value=user_1)  # [user_1, user_2, user_3]
+    user_repo.get_by_id = Mock(return_value=user_1)
     return user_repo
 
 
