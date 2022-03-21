@@ -31,7 +31,7 @@ hupper -m waitress --port=8000 --host=127.0.0.1 simple_chat.composites.chat_api:
 - Linux:
 
 ``
-gunicorn -b 127.0.0.1:8000 chat.composites.chat_api:app --reload
+gunicorn -b 127.0.0.1:8000 simple_chat.composites.chat_api:app --reload
 ``
 
 ####Пример использования

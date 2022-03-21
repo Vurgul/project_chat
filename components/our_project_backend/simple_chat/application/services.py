@@ -62,19 +62,9 @@ class Authorization:
 
     @join_point
     @validate_arguments
-    def get_token(self, user_id: int) -> str:
-        user = self.get_user_info(user_id)
-        token = jwt.encode(
-            {
-                'sub': user.id,
-                'login': user.login,
-                'name': user.login,
-                'group': 'User'
-            },
-            'auth_secret_key',
-            algorithm='HS256'
-        )
-        return token
+    def authentication(self, login: str, password: str) -> User:
+        user = self.user_repo.get_by_user_data(login, password)
+        return user
 
 
 @component
@@ -124,11 +114,11 @@ class ChatManager:
     def get_users_info(self, chat_id: int, user_id: int) -> List:
         self._validate_user_in_chat(chat_id, user_id)
         chat = self.get_chat(chat_id)
-        temp_user_list = []
+        users = []
         for member in chat.members:
             user_login = self.get_user(member.user_id).login
-            temp_user_list.append(user_login)
-        return temp_user_list
+            users.append(user_login)
+        return users
 
     @join_point
     @validate_arguments
@@ -200,31 +190,31 @@ class Message:
 
     @validate_arguments
     def _validate_user_in_chat(self, chat_id: int, user_id: int) -> Chat:
-        member = self.chat_member_repo.get_by_fields(chat_id, user_id)
-        if member is None:
-            raise errors.NoUserInChat(user_id=user_id, chat_id=chat_id)
         chat = self.chat_repo.get_by_id(chat_id)
         if chat is None:
             raise errors.NoChat(id=chat_id)
+        member = self.chat_member_repo.get_by_fields(chat_id, user_id)
+        if member is None:
+            raise errors.NoUserInChat(user_id=user_id, chat_id=chat_id)
         return chat
 
     @validate_arguments
     def get_chat_messages(self, chat_id: int, user_id: int) -> List:
         chat = self._validate_user_in_chat(chat_id, user_id)
-        temp_massages_list = []
+        massages = []
         for message in chat.messages:
-            temp_massages_list.append(message.text)
-        return temp_massages_list
+            massages.append(message.text)
+        return massages
 
     @validate_with_dto
-    def create_massage(self, message_info: MessageInfo) -> ChatMessage:
+    def create_message(self, message_info: MessageInfo) -> ChatMessage:
         message = message_info.create_obj(ChatMessage)
         self.chat_message_repo.add(message)
         return message
 
     @validate_arguments
-    def add_massage_to_chat(self, chat_id: int, user_id: int, text: str):
+    def add_message_to_chat(self, chat_id: int, user_id: int, text: str):
         chat = self._validate_user_in_chat(chat_id, user_id)
         message_info = MessageInfo(chat_id=chat_id, user_id=user_id, text=text)
-        message = self.create_massage(**message_info.dict())
+        message = self.create_message(**message_info.dict())
         chat.add_message(message)

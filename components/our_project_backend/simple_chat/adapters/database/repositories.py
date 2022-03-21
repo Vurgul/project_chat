@@ -15,8 +15,11 @@ class UsersRepo(BaseRepository, interfaces.UsersRepo):
         query = select(User).where(User.id == id)
         return self.session.execute(query).scalars().one_or_none()
 
-    def get_by_login(self, login: int) -> Optional[User]:
-        query = select(User).where(User.login == login)
+    def get_by_user_data(self, login: str, password: str) -> Optional[User]:
+        query = select(User).where(
+            User.login == login,
+            User.password == password,
+        )
         return self.session.execute(query).scalars().one_or_none()
 
     def add(self, user: User):
@@ -29,10 +32,6 @@ class ChatsRepo(BaseRepository, interfaces.ChatsRepo):
 
     def get_by_id(self, id) -> Optional[Chat]:
         query = select(Chat).where(Chat.id == id)
-        return self.session.execute(query).scalars().one_or_none()
-
-    def get_by_title(self, title: int) -> Optional[Chat]:
-        query = select(Chat).where(Chat.title == title)
         return self.session.execute(query).scalars().one_or_none()
 
     def remove(self, chat: Chat):

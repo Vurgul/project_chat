@@ -1,3 +1,4 @@
+import jwt
 from classic.components import component
 from classic.http_auth import authenticate, authenticator_needed
 from simple_chat.application import services
@@ -16,12 +17,20 @@ class Authorization:
     @join_point
     def on_post_authentication(self, request, response):
         """ Прохождение аутентификации -> авторизация"""
-        token = self.authorization.get_token(
+        user = self.authorization.authentication(
             **request.params
         )
-        # TODO: Реализовать логику аутентификации
-        response.media = {'user_id': token}
-        pass
+        token = jwt.encode(
+            {
+                'sub': user.id,
+                'login': user.login,
+                'name': user.login,
+                'group': 'User'
+            },
+            'auth_secret_key',
+            algorithm='HS256'
+        )
+        response.media = {'token': token}
 
 
 @authenticator_needed
@@ -92,13 +101,6 @@ class ChatManager:
 
     @join_point
     @authenticate
-    def on_post_kick_user(self, request, response):
-        """ Удалить / Выгнать участника чата"""
-        # TODO: Если останется время
-        pass
-
-    @join_point
-    @authenticate
     def on_post_delete_chat(self, request, response):
         """ Удалить чат"""
         self.chat.delete_chat(
@@ -128,7 +130,5 @@ class Message:
     @authenticate
     def on_post_send(self, request, response):
         """ Отправка сообщения в чат"""
-        self.message.add_massage_to_chat(
-            user_id=request.context.client.user_id,
-            **request.media
-        )
+        self.message.add_message_to_chat(user_id=request.context.client.user_id,
+                                         **request.media)

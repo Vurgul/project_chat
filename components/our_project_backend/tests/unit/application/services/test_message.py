@@ -26,10 +26,10 @@ def test_get_chat_messages(service, chat_1, user_1, chat_message_1):
 
 
 def test_create_massage(service):
-    service.create_massage(**data_message)
+    service.create_message(**data_message)
     service.chat_message_repo.add.assert_called_once()
 
 
 def test_add_massage_to_chat(service, chat_1, user_1):
-    service.add_massage_to_chat(chat_id=chat_1.id, user_id=user_1.id, text='!')
+    service.add_message_to_chat(chat_id=chat_1.id, user_id=user_1.id, text='!')
     service.chat_message_repo.add.assert_called_once()
