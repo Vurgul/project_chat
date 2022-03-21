@@ -76,10 +76,13 @@ class ChatManager:
     @authenticate
     def on_post_create(self, request, response):
         """Создать чат"""
-        self.chat.create_chat(
+        chat = self.chat.create_chat(
             user_id=request.context.client.user_id,
             **request.media,
         )
+        response.media = {
+            'chat_id': chat.id
+        }
 
     @join_point
     @authenticate

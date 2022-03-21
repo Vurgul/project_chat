@@ -1,6 +1,5 @@
 from typing import List, Optional, Tuple
 
-import jwt
 from classic.app import DTO, validate_with_dto
 from classic.aspects import PointCut
 from classic.components import component
@@ -140,10 +139,11 @@ class ChatManager:
 
     @join_point
     @validate_with_dto
-    def create_chat(self, chat_info: ChatCreateInfo):
+    def create_chat(self, chat_info: ChatCreateInfo) -> Chat:
         chat = chat_info.create_obj(Chat)
         self.chat_repo.add(chat)
         self.add_user_to_chat(chat.id, chat.user_id, chat.user_id)
+        return chat
 
     @validate_with_dto
     def create_member(self, member_info: MemberInfo) -> ChatMember:
