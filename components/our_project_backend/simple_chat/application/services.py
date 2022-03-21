@@ -130,9 +130,9 @@ class ChatManager:
     @join_point
     @validate_arguments
     def leave_chat(self, chat_id: int, user_id: int):
-        member = self._validate_user_in_chat(chat_id, user_id)
         chat = self.get_chat(chat_id)
         user = self.get_user(user_id)
+        member = self._validate_user_in_chat(chat_id, user_id)
         if chat.user_id == user.id:
             self.delete_chat(chat_id, user_id)
         else:
