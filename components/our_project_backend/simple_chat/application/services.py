@@ -131,7 +131,9 @@ class ChatManager:
     @validate_arguments
     def leave_chat(self, chat_id: int, user_id: int):
         member = self._validate_user_in_chat(chat_id, user_id)
-        if self._validate_owner_chat_to_del(chat_id, user_id):
+        chat = self.get_chat(chat_id)
+        user = self.get_user(user_id)
+        if chat.user_id == user.id:
             self.delete_chat(chat_id, user_id)
         else:
             self.chat_member_repo.remove(member)
@@ -179,13 +181,6 @@ class ChatManager:
         if member is None:
             raise errors.NoUserInChat(user_id=user_id, chat_id=chat_id)
         return member
-
-    def _validate_owner_chat_to_del(self, chat_id: int, user_id: int) -> Chat:
-        chat = self.get_chat(chat_id)
-        user = self.get_user(user_id)
-        if chat.user_id != user.id:
-            return chat
-        return chat
 
 
 @component
